@@ -39,22 +39,31 @@ python web_page_analysis.py [URL] [OPTIONS]
 
 ### Examples
 
+As an example, I've taken up the challenge we created with PauvreTimo, available here : [here](https://github.com/MarchandRobin/CLOG/tree/main/Third)
+
 To search for forms and inputs on a web page:
 
 ```bash
 python web_page_analysis.py https://example.com --search
 ```
 
+![Search](https://github.com/MarchandRobin/LateXI/blob/main/img/search.png?raw=true)
+
 To perform GET requests to found routes:
 
 ```bash
 python web_page_analysis.py https://example.com --get-requests
 ```
+![REQ](https://github.com/MarchandRobin/LateXI/blob/main/img/get-r.png?raw=true)
+
 To check for vulnerabilities using LaTeX injections:
 
 ```bash
 python web_page_analysis.py https://example.com --injections
 ```
+![REQ+I](https://github.com/MarchandRobin/LateXI/blob/main/img/get-r+I.png?raw=true)
+
+
 ### Features
 
 - Extracts visible routes (GET requests) and form details from a web page.
