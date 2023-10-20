@@ -7,16 +7,22 @@ import string
 from io import BytesIO
 from PyPDF2 import PdfReader
 import urllib.parse
+from art import *
+import os
 
 init(autoreset=True)
 
+def print_banner():
+    tprint("LateXI", font="isometric1")
+    print("By M58 and PauvreTimo")
+
 def get_routes_and_forms(url, perform_get_request, search):
     try:
-        # Send an HTTP GET request to the specified URL
+        
         response = requests.get(url)
 
         if response.status_code == 200:
-            # Parse the HTML content of the webpage
+            
             soup = BeautifulSoup(response.text, 'html.parser')
 
             if search:
@@ -32,19 +38,19 @@ def get_routes_and_forms(url, perform_get_request, search):
                         print(f"  Input type: {input_type}, name: {input_name}")
                 return
 
-            # Find all <form> elements on the page
+            
             forms = soup.find_all('form')
             all_routes = []
 
             for form in forms:
-                # Extract the 'action' attribute of the form
+                
                 action = form.get('action', '/')
                 all_routes.append(action)
 
-                # Find all <input> elements inside the form
+                
                 inputs = form.find_all('input')
 
-            # Print a menu of routes for GET requests
+            
             if perform_get_request:
                 print("Routes found:")
                 for idx, route in enumerate(all_routes, start=1):
@@ -58,16 +64,16 @@ def get_routes_and_forms(url, perform_get_request, search):
                         route = all_routes[num - 1]
                         get_response = requests.get(url + route)
                         
-                        # Print the content of the response
+                        
                         get_status = get_response.status_code
                         
                         if get_status != 200:
                             print(f"{Fore.RED}GET Request failed for {route}")
                             include_input = input("Would you like to include found input in the request? (Y/n) ")
                             if include_input.lower() == 'y' or include_input.lower() == '':
-                                # Create a string composed of each input name and a single char after
+                                
                                 for i in range(len(inputs)):
-                                    # delete "None" from inputs
+                                    
                                     if inputs[i].get('name') == None:
                                         del inputs[i]
                                         break
@@ -83,7 +89,7 @@ def get_routes_and_forms(url, perform_get_request, search):
                                     if get_response.status_code == 200:
                                         print(f"{Fore.GREEN}=> GET Request succeeded for {route}")
                                         
-                                        # Check if it's a PDF by examining the first few bytes
+                                        
                                         is_pdf = get_response.content.startswith(b'%PDF')
                                         if is_pdf:
                                             pdf_file = True
@@ -105,7 +111,7 @@ def get_routes_and_forms(url, perform_get_request, search):
                                             else :
                                                 print(f"{Fore.RED}[!] GET Request failed for {route}")
 
-                                        # If args contains --injections, then print ok
+                                        
                                         if args.injections:
                                             choice_inject = input("Are you sure you want to perform injections? (Y/n) ")
                                             if choice_inject.lower() == 'y' or choice_inject.lower() == "":
@@ -134,11 +140,15 @@ def get_routes_and_forms(url, perform_get_request, search):
         print(Fore.RED + f"An error occurred: {str(e)}")
 
 if __name__ == '__main__':
+    os.system('cls' if os.name == 'nt' else 'clear')
     parser = argparse.ArgumentParser(description="Extract routes and form details from a webpage")
     parser.add_argument("url", help="URL of the webpage to analyze")
+    parser.add_argument("--banner", help="Print banner", action="store_true")
     parser.add_argument("--get-requests", action="store_true", help="Perform GET requests to found routes")
     parser.add_argument("--search", action="store_true", help="Search for all forms and inputs on the page")
     parser.add_argument("--injections", action="store_true", help="Search for all forms and inputs on the page")
     args = parser.parse_args()
 
     get_routes_and_forms(args.url, args.get_requests, args.search)
+    if args.banner:
+        print_banner()
